@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>💖 Confession for You | Will you be my Girlfriend?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------
+   GLOBAL RESET & VARIABLES
+--------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+}
+:root {
+  --pink: #ff85a1;
+  --rose: #ff4d79;
+  --lilac: #d4a8e8;
+  --peach: #ffb89a;
+  --deep: #7a1f40;
+  --night: #0d0019;
+  --gold: #ffd966;
+  --cream: #fff8fa;
+  --mint: #a8e6cf;
+  --lavender: #c5a3ff;
+}
+
+/* ========== 1. BACKGROUND LAYER (MULTI LAYER) ========== */
+#scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 0;
+}
+#parallax-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.1s ease-out;
+}
+
+/* Gradient utama dengan gerakan lambat */
+.bg-grad {
+  position: absolute;
+  inset: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(125deg,
+    #fce4ec 0%, #f8c8dc 10%, #ead5f8 22%, #dceeff 34%,
+    #ffe8d6 46%, #ffd6e8 58%, #eadcff 70%, #d8f0ff 82%, #fce4ec 100%);
+  background-size: 500% 500%;
+  animation: bgMove 22s ease infinite;
+}
+@keyframes bgMove {
+  0% { background-position: 0% 0%; transform: rotate(0deg) scale(1); }
+  33% { background-position: 100% 20%; }
+  66% { background-position: 50% 100%; transform: rotate(1.8deg) scale(1.05); }
+  100% { background-position: 0% 0%; transform: rotate(0deg) scale(1); }
+}
+
+/* Aurora effect */
+.aurora {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 30%, rgba(180,130,255,0.12), transparent 60%),
+              radial-gradient(ellipse at 80% 70%, rgba(255,120,180,0.1), transparent 60%);
+  animation: auroraFloat 14s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes auroraFloat {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+
+/* Bokeh circles (multi ukuran) */
+.bokeh {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0;
+  animation: bkF var(--d) ease-in-out infinite var(--dl);
+}
+@keyframes bkF {
+  0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+  40% { opacity: var(--o); }
+  70% { opacity: var(--o); }
+  100% { opacity: 0; transform: scale(1.3) translateY(-30px); }
+}
+
+/* Sparkle stars */
+.sp {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  animation: spTw var(--d) ease-in-out infinite var(--dl);
+}
+.sp::before, .sp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 7px 3px rgba(255,200,225,0.9);
+}
+.sp::after {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: rgba(255,225,240,0.95);
+}
+@keyframes spTw {
+  0%,100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  20% { opacity: 1; transform: scale(1) rotate(45deg); }
+  80% { opacity: 0.7; transform: scale(0.8) rotate(95deg); }
+}
+
+/* Falling hearts background */
+.fh {
+  position: absolute;
+  top: -70px;
+  font-size: var(--s);
+  opacity: 0;
+  animation: fhDrop var(--d) linear infinite var(--dl);
+  filter: drop-shadow(0 0 6px rgba(255,100,150,0.45));
+}
+@keyframes fhDrop {
+  0% { opacity: 0; transform: translateY(0) rotate(var(--r)) scale(0.4); }
+  10% { opacity: 0.85; }
+  88% { opacity: 0.35; }
+  100% { opacity: 0; transform: translateY(115vh) rotate(calc(var(--r) + 380deg)) scale(1.2); }
+}
+
+/* Shooting stars */
+.shooting-star {
+  position: absolute;
+  top: -20px;
+  width: 2px;
+  height: 2px;
+  background: linear-gradient(135deg, #fff, var(--gold));
+  border-radius: 50%;
+  animation: shootStar linear forwards;
+}
+@keyframes shootStar {
+  0% { transform: translateX(0) translateY(0); opacity: 1; width: 2px; }
+  70% { opacity: 0.8; }
+  100% { transform: translateX(280px) translateY(180px); opacity: 0; width: 0px; }
+}
+
+/* Glitter particles */
+.glitter {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: glitterFade 1.5s ease-out forwards;
+}
+@keyframes glitterFade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+/* Bubble particles */
+.bubble {
+  position: absolute;
+  bottom: -40px;
+  width: var(--sz);
+  height: var(--sz);
+  background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,200,220,0.2));
+  border-radius: 50%;
+  animation: bubbleRise var(--d) ease-in infinite var(--dl);
+  pointer-events: none;
+}
+@keyframes bubbleRise {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.4; }
+  100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+}
+
+/* Vignette */
+.vig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(160,70,120,0.3) 100%);
+  z-index: 2;
+}
+
+/* ========== 2. MAIN CARD (GLASSMORPHISM) ========== */
+.card {
+  position: relative;
+  z-index: 15;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255,170,200,0.55);
+  border-radius: 56px;
+  padding: 32px 42px 42px;
+  max-width: 550px;
+  width: 92%;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(255,100,150,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+  animation: cardIn 1.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(60px) scale(0.88); }
+  to { opacity: 1; transform: none; }
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #ff85a1, #d4a8e8, #ff85a1, transparent);
+  border-radius: 0 0 50% 50%;
+  box-shadow: 0 0 22px 6px rgba(255,133,161,0.5);
+}
+.card::after {
+  content: '✨';
+  position: absolute;
+  top: -18px;
+  left: 20px;
+  font-size: 28px;
+  animation: spinGlow 3s infinite;
+}
+@keyframes spinGlow {
+  0%,100% { transform: rotate(0deg) scale(1); opacity: 0.6; }
+  50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+}
+
+/* Dekorasi atas */
+.deco-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fUp 0.7s 0.35s ease both;
+}
+.deco-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,133,161,0.55), transparent);
+}
+.deco-em {
+  font-size: 1rem;
+  animation: spinPop 6s ease-in-out infinite var(--dl);
+}
+@keyframes spinPop {
+  0%,100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.4); }
+}
+
+.scene-label {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1rem;
+  color: #b05070;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fUp 0.7s 0.5s ease both;
+}
+.conf-line1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.1rem,4vw,1.5rem);
+  color: #8a2040;
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0;
+  animation: fUp 0.8s 0.65s ease both;
+}
+.conf-line2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem,5.5vw,2.5rem);
+  font-weight: 700;
+  color: var(--deep);
+  line-height: 1.2;
+  opacity: 0;
+  animation: fUp 0.8s 0.82s ease both;
+}
+.conf-line2 em { font-style: italic; color: #b02050; }
+.conf-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  color: #c07090;
+  margin: 8px 0 12px;
+  opacity: 0;
+  animation: fUp 0.7s 1.15s ease both;
+}
+.hearts-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fUp 0.7s 1.3s ease both;
+}
+.hr-em {
+  font-size: 0.85rem;
+  animation: hrBeat 2s ease-in-out infinite var(--dl);
+}
+@keyframes hrBeat {
+  0%,100% { transform: scale(1); }
+  40% { transform: scale(1.5); }
+  65% { transform: scale(1.1); }
+}
+@keyframes fUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ========== 3. THREE CUTE CHARACTERS (CAT, RABBIT, PANDA) ========== */
+.animals-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 15px 0 20px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fUp 1s 1.35s ease both;
+}
+.character {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.15));
+  animation: charIdle 2.5s ease-in-out infinite;
+}
+@keyframes charIdle {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* karakter base style */
+.emoji-char {
+  font-size: 85px;
+  transition: all 0.2s;
+}
+.character:hover .emoji-char {
+  transform: scale(1.1);
+}
+
+/* floating hati di sekitar karakter */
+.char-heart {
+  position: absolute;
+  font-size: 22px;
+  pointer-events: none;
+  animation: charHeartFloat 0.8s forwards;
+}
+@keyframes charHeartFloat {
+  0% { transform: scale(0.2) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(-50px); opacity: 0; }
+}
+
+/* ========== 4. BUTTONS ========== */
+.btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+#btnYes {
+  position: relative;
+  padding: 14px 44px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #ff4d79, #ff85a1, #e8507a);
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(255,77,121,0.5);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+  animation: yGlow 2.8s ease-in-out infinite;
+}
+@keyframes yGlow {
+  0%,100% { box-shadow: 0 8px 28px rgba(255,77,121,0.5); }
+  50% { box-shadow: 0 12px 42px rgba(255,77,121,0.75), 0 0 0 8px rgba(255,77,121,0.15); }
+}
+#btnYes:hover {
+  transform: scale(1.06) translateY(-2px);
+  box-shadow: 0 14px 40px rgba(255,77,121,0.65);
+}
+#btnYes:active { transform: scale(0.96); }
+#btnYes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shine 3.8s ease-in-out infinite 1s;
+}
+@keyframes shine { 0% { left: -100%; } 100% { left: 220%; } }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transform: scale(0);
+  animation: ripEff 0.65s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes ripEff { to { transform: scale(6); opacity: 0; } }
+
+#btnNo {
+  position: fixed;
+  padding: 12px 30px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #c07090;
+  background: rgba(255,255,255,0.75);
+  border: 1.5px solid rgba(220,130,160,0.45);
+  border-radius: 50px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  transition: left 0.3s cubic-bezier(0.22,1,0.36,1), top 0.3s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+#btnNo:active { transform: scale(0.96); }
+
+/* ========== 5. YES SCENE (CINEMATIC) ========== */
+#yesScene {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  background: #0d0019;
+  transition: opacity 1.2s ease;
+}
+#yesScene.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.night-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 28%, #4a0070 0%, #1c0035 42%, #0d0019 100%);
+}
+.night-aurora {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(100,200,255,0.15), transparent 70%),
+              radial-gradient(ellipse at 70% 40%, rgba(255,100,200,0.12), transparent 70%);
+  animation: auroraWave 8s ease-in-out infinite;
+}
+@keyframes auroraWave { 0%,100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
+.nstar {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: starTwink var(--d) ease-in-out infinite var(--dl);
+}
+@keyframes starTwink { 0%,100% { opacity: 0.15; transform: scale(1); } 50% { opacity: 1; transform: scale(1.6); } }
+
+.norb {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--c);
+  filter: blur(95px);
+  animation: orbFloat var(--d) ease-in-out infinite var(--dl);
+}
+@keyframes orbFloat { 0%,100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.4); opacity: 0.5; } }
+
+.conf-p {
+  position: absolute;
+  width: var(--w);
+  height: var(--h);
+  background: var(--c);
+  border-radius: var(--r);
+  animation: confFall var(--d) ease-in infinite var(--dl);
+  top: -20px;
+}
+@keyframes confFall {
+  0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+  10% { opacity: 1; }
+  90% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(110vh) rotate(var(--sp)); }
+}
+.yfh {
+  position: absolute;
+  font-size: var(--s);
+  animation: heartRise var(--d) ease-in infinite var(--dl);
+  filter: drop-shadow(0 0 10px rgba(255,100,150,0.8));
+}
+@keyframes heartRise {
+  0% { opacity: 0; transform: translateY(0) scale(0.3) rotate(var(--r)); }
+  15% { opacity: 1; }
+  85% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-108vh) scale(1.5) rotate(calc(var(--r) + 220deg)); }
+}
+
+/* Big characters in YES scene */
+.yes-chars {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 15;
+}
+.yes-char {
+  font-size: 85px;
+  animation: yesCharDance 0.8s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 20px rgba(255,200,220,0.9));
+}
+@keyframes yesCharDance {
+  from { transform: translateY(0) rotate(-5deg); }
+  to { transform: translateY(-15px) rotate(5deg); }
+}
+.yes-text {
+  position: relative;
+  z-index: 15;
+  text-align: center;
+  padding: 0 20px;
+}
+.yt1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem,8vw,3.6rem);
+  font-weight: 700;
+  color: #ff85a1;
+  text-shadow: 0 0 30px rgba(255,133,161,0.8);
+  opacity: 0;
+  animation: textAppear 1s 0.9s forwards;
+}
+.yt2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.1rem,4vw,1.6rem);
+  color: #e8b8d8;
+  opacity: 0;
+  animation: textAppear 1s 2s forwards;
+}
+.yt3 {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(0.85rem,3vw,1rem);
+  color: #cca0c4;
+  opacity: 0;
+  animation: textAppear 1s 3.2s forwards;
+}
+.yt4 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1rem,3.5vw,1.3rem);
+  color: #ff85a1;
+  opacity: 0;
+  animation: textAppear 1s 4.4s forwards;
+  margin-top: 12px;
+}
+@keyframes textAppear {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 550px) {
+  .card { padding: 24px 20px 30px; }
+  .emoji-char { font-size: 65px; }
+  .btn-yes { padding: 10px 32px; font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="scene">
+  <div id="parallax-bg">
+    <div class="bg-grad"></div>
+    <div class="aurora"></div>
+    <div id="bokehLayer"></div>
+    <div id="sparkleLayer"></div>
+    <div id="heartsLayer"></div>
+    <div id="bubbleLayer"></div>
+  </div>
+  <div class="vig"></div>
+
+  <div class="card">
+    <div class="deco-top">
+      <div class="deco-line"></div>
+      <span class="deco-em" style="--dl:0s">✦</span>
+      <span class="deco-em" style="--dl:.4s">🌸</span>
+      <span class="deco-em" style="--dl:.8s">💕</span>
+      <span class="deco-em" style="--dl:1.2s">✦</span>
+      <div class="deco-line"></div>
+    </div>
+    <div class="scene-label">— a little message from my heart —</div>
+    <div class="conf-line1">Will You Be My</div>
+    <div class="conf-line2"><em>Girlfriend?</em> 💖</div>
+    <div class="conf-sub">these little babies are counting on you 🥺✨</div>
+    <div class="hearts-row">
+      <span class="hr-em" style="--dl:0s">💕</span>
+      <span class="hr-em" style="--dl:.2s">🌸</span>
+      <span class="hr-em" style="--dl:.4s">💗</span>
+      <span class="hr-em" style="--dl:.6s">✨</span>
+      <span class="hr-em" style="--dl:.8s">💖</span>
+    </div>
+
+    <!-- Three characters: Cat, Rabbit, Panda -->
+    <div class="animals-container" id="animalsContainer">
+      <div class="character" data-char="cat">
+        <div class="emoji-char">🐱💕</div>
+      </div>
+      <div class="character" data-char="rabbit">
+        <div class="emoji-char">🐰💖</div>
+      </div>
+      <div class="character" data-char="panda">
+        <div class="emoji-char">🐼💗</div>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button id="btnYes">Yes 💖</button>
+    </div>
+  </div>
+</div>
+
+<button id="btnNo">No 😔</button>
+
+<div id="yesScene">
+  <div class="night-bg"></div>
+  <div class="night-aurora"></div>
+  <div id="nightStars"></div>
+  <div id="nightOrbs"></div>
+  <div id="confContainer"></div>
+  <div id="yesFHContainer"></div>
+
+  <div class="yes-chars">
+    <div class="yes-char">🐱💕</div>
+    <div class="yes-char">🐰💖</div>
+    <div class="yes-char">🐼💗</div>
+  </div>
+  <div class="yes-text">
+    <div class="yt1">YAYYY ❤️</div>
+    <div class="yt2">You just made me the happiest person 😍</div>
+    <div class="yt3">I promise to cherish you, love you, and always make you smile 💖</div>
+    <div class="yt4">Now we're official~ 🐱🐰🐼✨</div>
+  </div>
+</div>
+
+<script>
+// ========== BACKGROUND PARTICLE GENERATORS (LENGKAP) ==========
+function createBokeh() {
+  const layer = document.getElementById('bokehLayer');
+  const cols = ['rgba(255,150,180,0.38)','rgba(210,155,240,0.32)','rgba(255,200,140,0.28)','rgba(150,200,255,0.28)','rgba(255,220,230,0.42)'];
+  for (let i = 0; i < 38; i++) {
+    const b = document.createElement('div');
+    b.className = 'bokeh';
+    const sz = 45 + Math.random() * 230;
+    b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${cols[i%cols.length]};--d:${6+Math.random()*12}s;--dl:${-Math.random()*15}s;--o:${0.18+Math.random()*0.32};`;
+    layer.appendChild(b);
+  }
+}
+function createSparkles() {
+  const layer = document.getElementById('sparkleLayer');
+  for (let i = 0; i < 75; i++) {
+    const s = document.createElement('div');
+    s.className = 'sp';
+    const sz = 3 + Math.random() * 15;
+    s.style.cssText = `--s:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${-Math.random()*8}s;`;
+    layer.appendChild(s);
+  }
+}
+function createFallingHearts() {
+  const layer = document.getElementById('heartsLayer');
+  const hearts = ['❤️','💖','💗','💕','💞','💘','💝','🩷'];
+  for (let i = 0; i < 45; i++) {
+    const h = document.createElement('div');
+    h.className = 'fh';
+    h.textContent = hearts[i % hearts.length];
+    h.style.cssText = `--s:${0.7+Math.random()*1.8}rem;left:${Math.random()*100}%;--d:${7+Math.random()*16}s;--dl:${-Math.random()*22}s;--r:${-45+Math.random()*90}deg;`;
+    layer.appendChild(h);
+  }
+}
+function createBubbles() {
+  const layer = 
+  document.getElementById('bubbleLayer');
+  for (let i = 0; i < 28; i++) {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const sz = 12 + Math.random() * 45;
+    b.style.cssText = `--sz:${sz}px;left:${Math.random()*100}%;--d:${6+Math.random()*12}s;--dl:${-Math.random()*18}s;`;
+    layer.appendChild(b);
+  }
+}
+function createShootingStars() {
+  setInterval(() => {
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    star.style.left = Math.random() * 80 + 10 + '%';
+    star.style.top = Math.random() * 60 + '%';
+    star.style.animationDuration = 0.7 + Math.random() * 1.3 + 's';
+    document.getElementById('parallax-bg').appendChild(star);
+    setTimeout(() => star.remove(), 1500);
+  }, 2800);
+}
+function createGlitters() {
+  setInterval(() => {
+    const g = document.createElement('div');
+    g.className = 'glitter';
+    g.style.left = Math.random() * 100 + '%';
+    g.style.top = Math.random() * 100 + '%';
+    document.getElementById('parallax-bg').appendChild(g);
+    setTimeout(() => g.remove(), 1500);
+  }, 500);
+}
+createBokeh(); createSparkles(); createFallingHearts(); createBubbles(); createShootingStars(); createGlitters();
+
+// ========== ANIMASI RANDOM UNTUK KARAKTER ==========
+const characters = document.querySelectorAll('.character');
+let charAnimating = false;
+function randomCharAction(charDiv) {
+  if (charAnimating) return;
+  charAnimating = true;
+  const emoji = charDiv.querySelector('.emoji-char');
+  const originalAnim = emoji.style.animation;
+  emoji.style.animation = 'none';
+  const rand = Math.random();
+  if (rand < 0.33) {
+    emoji.style.transform = 'scale(1.2) rotate(10deg)';
+    setTimeout(() => emoji.style.transform = '', 250);
+  } else if (rand < 0.66) {
+    emoji.style.transform = 'translateY(-12px) scale(1.1)';
+    setTimeout(() => emoji.style.transform = '', 300);
+  } else {
+    const blush = document.createElement('div');
+    blush.innerHTML = '😳';
+    blush.style.position = 'absolute';
+    blush.style.left = '50%';
+    blush.style.top = '20%';
+    blush.style.fontSize = '24px';
+    blush.style.transform = 'translateX(-50%)';
+    blush.style.opacity = '0';
+    blush.style.animation = 'charHeartFloat 0.5s forwards';
+    charDiv.appendChild(blush);
+    setTimeout(() => blush.remove(), 500);
+  }
+  setTimeout(() => {
+    emoji.style.transform = '';
+    emoji.style.animation = originalAnim;
+    charAnimating = false;
+  }, 350);
+}
+setInterval(() => {
+  characters.forEach(char => randomCharAction(char));
+}, 3200);
+
+// ========== TOMBOL NO (ESCAPE + YES MEMBESAR) ==========
+const yesBtn = document.getElementById('btnYes');
+const noBtn = document.getElementById('btnNo');
+let yesScale = 1, noCount = 0;
+const noTexts = ['No... 😔','Really? 🥺','Are you sure??','Please reconsider 💔','I\'m begging u 😭','Just click YES!! 😤','Not fair!! 😭','...okay 😢','last chance 👉👈'];
+
+function moveNoButton() {
+  const margin = 30;
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+  const x = margin + Math.random() * (window.innerWidth - w - margin * 2);
+  const y = margin + Math.random() * (window.innerHeight - h - margin * 2);
+  noBtn.style.left = x + 'px';
+  noBtn.style.top = y + 'px';
+}
+noBtn.style.left = '68%';
+noBtn.style.top = '74%';
+noBtn.addEventListener('mouseenter', () => {
+  if (document.getElementById('yesScene').classList.contains('active')) return;
+  noCount++;
+  moveNoButton();
+  yesScale += 0.09;
+  if (yesScale > 2.5) yesScale = 2.5;
+  yesBtn.style.transform = `scale(${yesScale})`;
+  if (noCount < noTexts.length) noBtn.textContent = noTexts[noCount];
+  // semua karakter kaget
+  characters.forEach(char => {
+    const em = char.querySelector('.emoji-char');
+    em.style.transform = 'scale(0.9) rotate(-5deg)';
+    setTimeout(() => em.style.transform = '', 250);
+  });
+});
+noBtn.addEventListener('touchstart', e => { e.preventDefault(); noBtn.dispatchEvent(new Event('mouseenter')); });
+window.addEventListener('resize', () => { if (!document.getElementById('yesScene').classList.contains('active')) moveNoButton(); });
+
+// ========== YES CLICK ==========
+yesBtn.addEventListener('click', (e) => {
+  if (document.getElementById('yesScene').classList.contains('active')) return;
+  const rect = yesBtn.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.cssText = `width:70px;height:70px;left:${e.clientX - rect.left - 35}px;top:${e.clientY - rect.top - 35}px;`;
+  yesBtn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 700);
+  
+  // hewan senang semua
+  characters.forEach(char => {
+    const em = char.querySelector('.emoji-char');
+    em.style.transform = 'scale(1.2)';
+    setTimeout(() => em.style.transform = '', 400);
+  });
+  
+  setTimeout(() => {
+    document.getElementById('yesScene').classList.add('active');
+    buildYesSceneEffects();
+  }, 500);
+});
+
+function buildYesSceneEffects() {
+  // stars
+  const starContainer = document.getElementById('nightStars');
+  for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div');
+    s.className = 'nstar';
+    const sz = 1 + Math.random() * 4;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*85}%;--d:${1.5+Math.random()*4}s;--dl:${-Math.random()*7}s;`;
+    starContainer.appendChild(s);
+  }
+  // orbs
+  const orbContainer = document.getElementById('nightOrbs');
+  const orbs = [
+    {w:500,h:420,l:'2%',t:'8%',c:'rgba(160,30,220,0.4)',d:'11s',dl:'0s'},
+    {w:450,h:450,l:'48%',t:'42%',c:'rgba(255,50,120,0.35)',d:'14s',dl:'-2s'},
+    {w:380,h:300,l:'20%',t:'65%',c:'rgba(60,80,220,0.28)',d:'12s',dl:'-4s'},
+    {w:250,h:250,l:'70%',t:'15%',c:'rgba(255,200,80,0.25)',d:'9s',dl:'-1s'}
+  ];
+  orbs.forEach(o => {
+    const orb = document.createElement('div');
+    orb.className = 'norb';
+    orb.style.cssText = `width:${o.w}px;height:${o.h}px;left:${o.l};top:${o.t};--c:${o.c};--d:${o.d};--dl:${o.dl};`;
+    orbContainer.appendChild(orb);
+  });
+  // confetti
+  const confCont = document.getElementById('confContainer');
+  const colors = ['#ff85a1','#ffb347','#c9a9e9','#85d1ff','#ff4d79','#ffe066','#a0e080','#ffaacc'];
+  for (let i = 0; i < 100; i++) {
+    const c = document.createElement('div');
+    c.className = 'conf-p';
+    const isRound = Math.random() > 0.5;
+    c.style.cssText = `--w:${5+Math.random()*12}px;--h:${isRound?5+Math.random()*12:8+Math.random()*10}px;--r:${isRound?'50%':'2px'};--c:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;--d:${4+Math.random()*8}s;--dl:${-Math.random()*15}s;--sp:${180+Math.random()*720}deg;`;
+    confCont.appendChild(c);
+  }
+  // floating hearts
+  const fhCont = document.getElementById('yesFHContainer');
+  const heartsList = ['❤️','💖','💗','💕','💞','💘','💝'];
+  for (let i = 0; i < 70; i++) {
+    const h = document.createElement('div');
+    h.className = 'yfh';
+    h.textContent = heartsList[i % heartsList.length];
+    h.style.cssText = `--s:${0.9+Math.random()*2.5}rem;left:${Math.random()*100}%;bottom:0;--d:${5+Math.random()*12}s;--dl:${-Math.random()*20}s;--r:${-35+Math.random()*70}deg;`;
+    fhCont.appendChild(h);
+  }
+}
+</script>
+</body>
+</html>
